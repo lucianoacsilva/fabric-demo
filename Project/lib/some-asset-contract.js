@@ -51,22 +51,31 @@ class SomeAssetContract extends Contract {
         await ctx.stub.deleteState(someAssetId);
     }
 
-    async getAllResults(iterator) {
+    async getHistoryOfAsset(ctx, key) {
+        const historyIterator = await ctx.stub.getHistoryForKey(key);
         const allResults = [];
+
         while (true) {
-            const res = await iterator.next();
-            if (res.value) {
-                // if not a getHistoryForKey iterator then key is contained in res.value.key
-                allResults.push(res.value.value.toString('utf8'));
+            const res = await historyIterator.next();
+
+            if (res.value && res.value.value.toString()) {
+                const Key = res.value.key;
+                let Record;
+                try {
+                    Record = JSON.parse(res.value.value.toString('utf8'));
+                } catch (err) {
+                    console.log(err);
+                    Record = res.value.value.toString('utf8');
+                }
+                allResults.push({ Key, Record });
             }
-    
-            // check to see if we have reached then end
             if (res.done) {
-                // explicitly close the iterator
-                await iterator.close();
-                return allResults;
+                await historyIterator.close();
+                console.info(allResults);
+                return JSON.stringify(allResults);
             }
         }
+        
     }
 
     async readAllAssets(ctx) {
@@ -75,11 +84,7 @@ class SomeAssetContract extends Contract {
             selector: {}
         };
 
-        console.log("Aaaa");
-        
-        const iterator = await ctx.stub.getQueryResult(JSON.stringify(getAllQuery));
-
-        console.log("Bbbbbb");
+        const iterator = await ctx.stub.getQueryResult(JSON.stringify(getAllQuery));  
 
         const allResults = [];
 
@@ -89,7 +94,6 @@ class SomeAssetContract extends Contract {
             const res = await iterator.next();
 
             if (res.value && res.value.value.toString()) {
-                console.log(res.value.value.toString('utf8'));
 
                 const Key = res.value.key;
                 let Record;
@@ -102,7 +106,6 @@ class SomeAssetContract extends Contract {
                 allResults.push({ Key, Record });
             }
             if (res.done) {
-                console.log('end of data');
                 await iterator.close();
                 console.info(allResults);
                 return JSON.stringify(allResults);
