@@ -1,0 +1,20 @@
+{
+  "name": "fabric-demo",
+  "version": "1.0.0",
+  "description": "Demonstration of Hyperledger Fabric 1.4",
+  "main": "apiserver.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "blockchain"
+  ],
+  "author": "Luciano Augusto Campagnoli da Silva",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "fabric-ca-client": "^1.4.0",
+    "fabric-network": "^1.4.0"
+  }
+}
