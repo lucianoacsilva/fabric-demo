@@ -62,6 +62,7 @@ const readAsset = async function (req, res) {
 
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists('admin');
+
         if (!userExists) {
             console.log('An identity for the user "admin" does not exist in the wallet');
             console.log('Run the registerUser.js application before retrying');
@@ -79,13 +80,9 @@ const readAsset = async function (req, res) {
         const contract = network.getContract('Project');
 
         // Evaluate the specified transaction.
-        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-        // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
         const result = await contract.evaluateTransaction('readSomeAsset', index);
         console.log(`Transaction has been evaluated, result is: ${JSON.parse(result.toString())}`);
 
-        const parsedResult = JSON.parse(result.toString());
-        console.log(parsedResult);
         
         res.status(200).json({
             response: JSON.parse(result.toString())
@@ -99,12 +96,9 @@ const readAsset = async function (req, res) {
     }
 }
 
-
 const createAsset = async function (req, res) {
     try {
-        const {
-            value
-        } = req.body;
+        const arguments = req.body;
 
         // Generate random index
         const index = Math.floor(Math.random() * 100000).toString();
@@ -116,6 +110,7 @@ const createAsset = async function (req, res) {
 
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists('admin');
+
         if (!userExists) {
             console.log('An identity for the user "admin" does not exist in the wallet');
             console.log('Run the registerUser.js application before retrying');
@@ -133,18 +128,15 @@ const createAsset = async function (req, res) {
         const contract = network.getContract('Project');
 
         // Evaluate the specified transaction.
-        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-        // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
-        const result = await contract.submitTransaction('createSomeAsset', index, value);
-        console.log(result);
+        const result = await contract.submitTransaction('createSomeAsset', index, JSON.stringify(arguments));
         //console.log(`Transaction has been evaluated, result is: ${JSON.parse(result.toString())}`);
-
-        //const parsedResult = JSON.parse(result.toString());
-        //console.log(parsedResult);
         
         res.status(200).json({
             message: "Asset created successfully",
         });
+
+        // Disconnect from gateway
+        await gateway.disconnect();
 
     } 
     
@@ -164,9 +156,7 @@ const updateAsset = async function (req, res) {
             index
         } = req.params;
 
-        const {
-            value
-        } = req.body;
+        const arguments = req.body;
         
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd() , 'Org1');
@@ -192,18 +182,17 @@ const updateAsset = async function (req, res) {
         const contract = network.getContract('Project');
 
         // Evaluate the specified transaction.
-        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-        // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
-        const result = await contract.submitTransaction('updateSomeAsset', index, value);
+        
+        const result = await contract.submitTransaction('updateSomeAsset', index, JSON.stringify(arguments));
         console.log(result);
         //console.log(`Transaction has been evaluated, result is: ${JSON.parse(result.toString())}`);
-
-        //const parsedResult = JSON.parse(result.toString());
-        //console.log(parsedResult);
         
         res.status(200).json({
             message: "Asset updated successfully",
         });
+
+        // Disconnect from gateway
+        await gateway.disconnect();
 
     } 
     
@@ -246,14 +235,15 @@ const deleteAsset = async function (req, res) {
         const contract = network.getContract('Project');
 
         // Evaluate the specified transaction.
-        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-        // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
         const result = await contract.submitTransaction('deleteSomeAsset', index);
         //console.log(`Transaction has been evaluated, result is: ${JSON.parse(result.toString())}`);
 
         res.status(200).json({
             message: "Asset deleted successfully",
         });
+
+        // Disconnect from gateway
+        await gateway.disconnect();
 
     } 
     

@@ -9,7 +9,7 @@ const {
     updateAsset,
     deleteAsset, 
     getHistoryOfAsset
- } = require('./controllers/backendApi');
+} = require('./controllers/backendApi');
 
 var app = express();
 app.use(bodyParser.json());

@@ -15,11 +15,13 @@ class SomeAssetContract extends Contract {
 
     async createSomeAsset(ctx, someAssetId, value) {
         const exists = await this.someAssetExists(ctx, someAssetId);
+
         if (exists) {
             throw new Error(`The some asset ${someAssetId} already exists`);
         }
-        const asset = { value };
-        const buffer = Buffer.from(JSON.stringify(asset));
+
+        const asset = value;
+        const buffer = Buffer.from(asset);
         await ctx.stub.putState(someAssetId, buffer);
     }
 
