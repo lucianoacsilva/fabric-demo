@@ -61,14 +61,19 @@ class SomeAssetContract extends Contract {
             if (res.value && res.value.value.toString()) {
                 const Key = res.value.key;
                 let Record;
+
                 try {
                     Record = JSON.parse(res.value.value.toString('utf8'));
-                } catch (err) {
+                } 
+                
+                catch (err) {
                     console.log(err);
                     Record = res.value.value.toString('utf8');
                 }
-                allResults.push({ Key, Record });
+
+                allResults.push(Record);
             }
+
             if (res.done) {
                 await historyIterator.close();
                 console.info(allResults);
@@ -99,12 +104,17 @@ class SomeAssetContract extends Contract {
                 let Record;
                 try {
                     Record = JSON.parse(res.value.value.toString('utf8'));
-                } catch (err) {
+                } 
+                
+                catch (err) {
                     console.log(err);
                     Record = res.value.value.toString('utf8');
                 }
-                allResults.push({ Key, Record });
+
+                Record.key = Key;
+                allResults.push(Record);
             }
+
             if (res.done) {
                 await iterator.close();
                 console.info(allResults);
