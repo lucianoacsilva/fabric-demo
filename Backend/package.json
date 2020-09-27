@@ -4,7 +4,8 @@
   "description": "Demonstration of Hyperledger Fabric 1.4",
   "main": "apiserver.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon apiserver.js"
   },
   "keywords": [
     "blockchain"
