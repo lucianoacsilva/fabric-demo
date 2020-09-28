@@ -37,19 +37,35 @@ class SomeAssetContract extends Contract {
 
     async updateSomeAsset(ctx, someAssetId, newValue) {
         const exists = await this.someAssetExists(ctx, someAssetId);
+
         if (!exists) {
             throw new Error(`The some asset ${someAssetId} does not exist`);
         }
-        const asset = { value: newValue };
-        const buffer = Buffer.from(JSON.stringify(asset));
-        await ctx.stub.putState(someAssetId, buffer);
+
+        // Reads the existant asset
+        const buffer = await ctx.stub.getState(someAssetId);
+        const asset = JSON.parse(buffer.toString());
+
+        // Updates the asset. If the attribute already exists, it overwrite to the asset.
+        // Otherwise, append the new attribute.
+        const parsedUpdate = JSON.parse(newValue);
+
+        const updatedAsset = {
+            ...asset,
+            ...parsedUpdate
+        };
+
+        const updateBuffer = Buffer.from(JSON.stringify(updatedAsset));
+        await ctx.stub.putState(someAssetId, updateBuffer);
     }
 
     async deleteSomeAsset(ctx, someAssetId) {
         const exists = await this.someAssetExists(ctx, someAssetId);
+
         if (!exists) {
             throw new Error(`The some asset ${someAssetId} does not exist`);
         }
+
         await ctx.stub.deleteState(someAssetId);
     }
 
