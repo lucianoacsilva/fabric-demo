@@ -129,7 +129,6 @@ const createAsset = async function (req, res) {
 
         // Evaluate the specified transaction.
         const result = await contract.submitTransaction('createSomeAsset', index, JSON.stringify(arguments));
-        //console.log(`Transaction has been evaluated, result is: ${JSON.parse(result.toString())}`);
         
         res.status(200).json({
             message: "Asset created successfully",
@@ -185,7 +184,6 @@ const updateAsset = async function (req, res) {
         
         const result = await contract.submitTransaction('updateSomeAsset', index, JSON.stringify(arguments));
         console.log(result);
-        //console.log(`Transaction has been evaluated, result is: ${JSON.parse(result.toString())}`);
         
         res.status(200).json({
             message: "Asset updated successfully",
@@ -236,7 +234,6 @@ const deleteAsset = async function (req, res) {
 
         // Evaluate the specified transaction.
         const result = await contract.submitTransaction('deleteSomeAsset', index);
-        //console.log(`Transaction has been evaluated, result is: ${JSON.parse(result.toString())}`);
 
         res.status(200).json({
             message: "Asset deleted successfully",
